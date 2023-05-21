@@ -44,7 +44,6 @@ def sds():
     cursor.execute(query)
     data = cursor.fetchall()
     conn.commit()
-    print(data)
     return render_template('sds.html', data=data)
 @app.route('/sds/add')
 def sds_add():
