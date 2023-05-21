@@ -35,6 +35,9 @@ def login():
 @app.route('/home')
 def home():
     return render_template('home.html')
+@app.route('/compatibility')
+def compatibility():
+    return render_template('compatibility.html')
 @app.route('/sds')
 def sds():
     query = "SELECT id, material_number, material_name, un_number, psn, hazard_label, sds_attached, sds_link, class_name, updated_at from sds"
