@@ -148,44 +148,46 @@
         <div class="col-12">
           <div class="card">
             <div class="card-header">
-              <h5 class="mb-0">SDS List</h5>
+              <h5 class="mb-0">Add SDS</h5>
             </div>
-            <div class="px-4"><a class="btn btn-danger pull-right" href="/sds/add">Add SDS</a></div>
-            <div class="table-responsive">
-              <table class="table table-flush" id="datatable-search">
-                <thead class="thead-light">
-                  <tr>
-                    <th>Material Number</th>
-                    <th>Material Name</th>
-                    <th>Un Number</th>
-                    <th>PSN</th>
-                    <th>Hazard Label</th>
-                    <th>SDS Attached</th>
-                    <th>SDS Link</th>
-                    <th>Class</th>
-                    <th>Updated At</th>
-                    <th> ... </th>
-                  </tr>
-                </thead>
-                <tbody>
-                {% for item in data %}
-                  <tr>
-                    <td>{{item[1]}}</td>
-                    <td>{{item[2]}}</td>
-                    <td>{{item[3]}}</td>
-                    <td>{{item[4]}}</td>
-                    <td>{{item[5]}}</td>
-                    <td>{{item[6]}}</td>
-                    <td><a class="btn btn-primary btn-xs" href="{{item[7]}}">View SDS</a></td>
-                    <td>{{item[8]}}</td>
-                    <td>
-                      <a class='btn btn-link text-danger px-0 mb-0 me-2 btn-sds-del' href='javascript:;' data-id='{{item[0]}}' data-sdsattached='{{item[6]}}'><i class='fa fa-trash' aria-hidden='true'></i> Delete</a>
-                      <a class='btn btn-link text-dark px-0 mb-0' href='/sds/edit?id={{item[0]}}'><i class='fa fa-pencil text-dark' aria-hidden='true'></i> Edit</a>
-                    </td>
-                  </tr>
-                {% endfor %}
-                </tbody>
-              </table>
+            <div class="card-body">
+              <form method="POST" action="" enctype="multipart/form-data">
+                <input type="hidden" name="sds_id" value="{{data[0][0]}}"/>
+                <input type="hidden" name="existing_sds_attached" value="{{data[0][6]}}"/>
+                <div class="form-group">
+                  <label class="form-label">Material Number</label>
+                  <input class="form-control" type="text" placeholder="Please enter material number" id="material_number" name="material_number" required value="{{data[0][1]}}"/>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Material Name</label>
+                  <input class="form-control" type="text" placeholder="Please enter material name" id="material_name" name="material_name" required value="{{data[0][2]}}"/>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Un Number</label>
+                  <input class="form-control" type="text" placeholder="Please enter un number" id="un_number" name="un_number" required value="{{data[0][3]}}"/>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Class Name</label>
+                  <input class="form-control" type="text" placeholder="Please enter class name" id="class_name" name="class_name" required value="{{data[0][8]}}"/>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">PSN</label>
+                  <input class="form-control" type="text" placeholder="Please enter psn" id="psn" name="psn" required value="{{data[0][4]}}"/>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Hazard Label</label>
+                  <input class="form-control" type="text" placeholder="Please enter hazard label" id="hazard_label" name="hazard_label" required value="{{data[0][5]}}"/>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">SDS Attached</label> <span class="text-xs"> {{data[0][6]}}</span>
+                  <input class="form-control" type="file" id="sds_attached" name="sds_attached"/>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">SDS Link</label>
+                  <input class="form-control" type="text" placeholder="Please enter SDS Link" id="sds_link" name="sds_link" required value="{{data[0][7]}}"/>
+                </div>
+                <button class="btn btn-primary float-end" type="submit">Submit</button>
+              </form>
             </div>
           </div>
         </div>
@@ -301,48 +303,15 @@
   <!-- Kanban scripts -->
   <script src="{{ url_for('static', filename='js/plugins/dragula/dragula.min.js')}}"></script>
   <script src="{{ url_for('static', filename='js/plugins/jkanban/jkanban.js')}}"></script>
-  <script src="{{ url_for('static', filename='js/plugins/datatables.js')}}"></script>
 
   <script>
-    const dataTableSearch = new simpleDatatables.DataTable("#datatable-search", {
-      searchable: true,
-      fixedHeight: true
-    });    
-    var win = navigator.platform.indexOf('Win') > -1;
-    if (win && document.querySelector('#sidenav-scrollbar')) {
-      var options = {
-        damping: '0.5'
-      }
-      Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
+  var win = navigator.platform.indexOf('Win') > -1;
+  if (win && document.querySelector('#sidenav-scrollbar')) {
+    var options = {
+      damping: '0.5'
     }
-    $(document).ready(function() {
-      $(".btn-sds-del").click(function() {
-        var $btn = $(this);
-        var confirm = window.confirm("Are you sure to delete this sds?");
-        var id = $(this).data("id");
-        var sds_attached = $(this).data("sdsattached");
-        if(confirm) {
-          var data = {
-            "id":id,
-            "sds_attached":sds_attached
-          };
-          $.ajax({
-            type: "POST",
-            url: "/delete_sds",
-            data: JSON.stringify(data),
-            contentType: "application/json",
-            dataType: 'json',
-            success:function(res) {
-              if(res.result == "success") {
-                $btn.parent().parent().remove();
-              } else {
-                alert("Something Wrong!");
-              }
-            }
-          })          
-        }
-      });
-    })
+    Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
+  }
   </script>
   <script async defer src="https://buttons.github.io/buttons.js"></script>
   <script src="{{ url_for('static', filename='js/argon-dashboard.js')}}"></script>

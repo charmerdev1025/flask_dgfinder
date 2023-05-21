@@ -48,6 +48,15 @@ def sds():
 @app.route('/sds/add')
 def sds_add():
     return render_template('sds_add.html')
+@app.route('/sds/edit', methods=['GET'])
+def sds_edit():
+    args = request.args
+    id = args.get("id")
+    query = "SELECT id, material_number, material_name, un_number, psn, hazard_label, sds_attached, sds_link, class_name, updated_at from sds where id=%s"
+    cursor.execute(query, (id))
+    data = cursor.fetchall()
+    conn.commit()
+    return render_template('sds_edit.html', data=data)
 
 @app.route('/db_login', methods=['POST'])
 def db_login():
