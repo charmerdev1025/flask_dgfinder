@@ -199,7 +199,31 @@ def sds_add_submit():
         cursor.execute(query, (un_number, psn, hazard_label, targetFile, sds_link ,material_number, material_name, class_name))
         conn.commit()
         return redirect('/sds')
-
+@app.route('/sds_edit_submit', methods = ['GET', 'POST'])
+def sds_edit_submit():
+    if request.method == "POST":
+        file = request.files['sds_attached']
+        existing_sds_attached = request.form["existing_sds_attached"]
+        filename = file.filename
+        targetFile	= str(time.time()) + "-" + filename.replace(" ","-").lower()
+        id = request.form["sds_id"]
+        material_number = request.form["material_number"]
+        material_name = request.form["material_name"]
+        un_number = request.form["un_number"]
+        class_name = request.form["class_name"]
+        psn = request.form["psn"]
+        hazard_label = request.form["hazard_label"]
+        sds_link = request.form["sds_link"]
+        if filename == "":
+            targetFile = existing_sds_attached
+        else:
+            os.remove(os.path.join('static/uploads/sds', existing_sds_attached))
+            file.save(os.path.join('static/uploads/sds', targetFile))
+        # print(targetFile)
+        query = "update sds set un_number=%s, psn=%s, hazard_label=%s, sds_attached=%s, sds_link=%s, material_number=%s, material_name=%s, class_name=%s where id=%s"
+        cursor.execute(query, (un_number, psn, hazard_label, targetFile, sds_link ,material_number, material_name, class_name, id))
+        conn.commit()
+        return redirect('/sds')
 @app.route('/search_compatibility', methods = ['POST'])
 def search_compatibility():
     target_path = request.json["filename"]

@@ -151,7 +151,7 @@
               <h5 class="mb-0">Add SDS</h5>
             </div>
             <div class="card-body">
-              <form method="POST" action="" enctype="multipart/form-data">
+              <form method="POST" action="{{ url_for('sds_edit_submit') }}" enctype="multipart/form-data">
                 <input type="hidden" name="sds_id" value="{{data[0][0]}}"/>
                 <input type="hidden" name="existing_sds_attached" value="{{data[0][6]}}"/>
                 <div class="form-group">
